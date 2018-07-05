@@ -20,17 +20,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor orangeColor];
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    
-    if (UIDeviceOrientationIsPortrait(UIDeviceOrientationPortrait)) {
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if ([[UIApplication sharedApplication]statusBarOrientation] == UIInterfaceOrientationPortrait) {
         self.top.constant = 145;
         self.bottom.constant = 210;
-    } else if (UIDeviceOrientationIsPortrait(UIDeviceOrientationLandscapeRight)) {
+    } else if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight) {
         self.top.constant = 40;
         self.bottom.constant = 50;
     }
 }
-
 + (instancetype)getStoryBoard {
     return [[UIStoryboard storyboardWithName:@"Main" bundle:nil]instantiateViewControllerWithIdentifier:NSStringFromClass([self class])];
 }

@@ -18,30 +18,13 @@
     [super viewDidLoad];
     
 
-    
-
-    
-    
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
 
-    NSLog(@"keydWindow:%@",NSStringFromClass([[UIApplication sharedApplication].keyWindow class]));
-    NSLog(@"window:%@ === superClass:%@ === rootClass:%@ ==== windows:%@",NSStringFromClass([[UIApplication sharedApplication].delegate.window class]),[self superclass],[self.parentViewController class],[UIApplication sharedApplication].windows);
-  
-    for (UIWindow *win in [UIApplication sharedApplication].windows) {
-        NSLog(@"%@",NSStringFromClass([win class]));
-    }
-}
-
-- (BOOL)shouldAutorotate{
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    return YES;
-}
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
     NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+    //允许旋转的方向
     return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeRight;
 }
 

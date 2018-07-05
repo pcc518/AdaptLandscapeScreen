@@ -38,7 +38,7 @@
 -(UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
     
 //    NSLog(@"0000000---------%@",NSStringFromClass([[self topViewController] class]));
-//    if ([NSStringFromClass([[self topViewController] class]) isEqualToString:@"想要提供转屏的控制器的名字"]) {
+//    if ([NSStringFromClass([[self topViewController] class]) isEqualToString:@"FirstViewController"]) {
 //        //横屏
 //        return UIInterfaceOrientationMaskLandscapeRight;
 //    }
@@ -46,7 +46,7 @@
 //    return UIInterfaceOrientationMaskPortrait;
     
     NSUInteger orientations = UIInterfaceOrientationMaskAllButUpsideDown;
-    
+
     if(self.window.rootViewController){
         //取出当前显示的控制器
         UIViewController *presentedViewController = [self topViewControllerWithRootViewController:self.window.rootViewController];
@@ -57,10 +57,10 @@
     return orientations;
 }
 //获取界面最上层的控制器
-- (UIViewController*)topViewController {
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
-}
+//- (UIViewController*)topViewController {
+//    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+//    return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+//}
 //一层一层的进行查找判断
 - (UIViewController*)topViewControllerWithRootViewController:(UIViewController*)rootViewController {
     NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);

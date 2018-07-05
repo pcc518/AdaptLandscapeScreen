@@ -18,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor cyanColor];
     UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithTitle:@"竖屏" style:UIBarButtonItemStylePlain target:self action:@selector(leftAction)];
     self.navigationItem.leftBarButtonItem = leftItem;
@@ -25,25 +26,33 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"横屏" style:UIBarButtonItemStylePlain target:self action:@selector(rightAction)];
     self.navigationItem.rightBarButtonItem = rightItem;
     
+    //监听设备旋转
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange) name:UIDeviceOrientationDidChangeNotification object:nil];
     
-    if (UIDeviceOrientationIsPortrait(UIDeviceOrientationPortrait)) {
-        self.top.constant = 145;
-        self.bottom.constant = 210;
-    } else if (UIDeviceOrientationIsPortrait(UIDeviceOrientationLandscapeRight)) {
-        self.top.constant = 40;
-        self.bottom.constant = 50;
-    }
+  
+}
+
+- (void)deviceOrientationDidChange
+{
+ 
+    [self isPortrait];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    NSLog(@"keydWindow:%@",NSStringFromClass([[UIApplication sharedApplication].keyWindow class]));
-    NSLog(@"window:%@ === superClass:%@ === rootClass:%@ ==== windows:%@",NSStringFromClass([[UIApplication sharedApplication].delegate.window class]),[self superclass],[self.parentViewController class],[UIApplication sharedApplication].windows);
-    for (UIWindow *win in [UIApplication sharedApplication].windows) {
-        NSLog(@"%@",NSStringFromClass([win class]));
-    }
+    [self isPortrait];
   
+}
+
+- (void)isPortrait {
+    
+    if ([[UIApplication sharedApplication]statusBarOrientation] == UIInterfaceOrientationPortrait) {
+        self.top.constant = 145;
+        self.bottom.constant = 210;
+    } else if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight) {
+        self.top.constant = 40;
+        self.bottom.constant = 50;
+    }
 }
 - (IBAction)pushAction:(id)sender {
     ModelViewController *modelVC = [ModelViewController getStoryBoard];
@@ -112,13 +121,8 @@
 
 - (void)interfaceOrientation:(UIInterfaceOrientation)orientation
 {
-    if (orientation == UIInterfaceOrientationLandscapeRight) {
-        self.top.constant = 40;
-        self.bottom.constant = 50;
-    } else {
-        self.top.constant = 145;
-        self.bottom.constant = 210;
-    }
+   
+    [self isPortrait];
     if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
         SEL selector             = NSSelectorFromString(@"setOrientation:");
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];

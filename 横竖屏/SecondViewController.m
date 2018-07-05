@@ -18,16 +18,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.view.backgroundColor = [UIColor yellowColor];
+    
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    NSLog(@"keydWindow:%@",NSStringFromClass([[UIApplication sharedApplication].keyWindow class]));
-    NSLog(@"window:%@ === superClass:%@ === rootClass:%@ ==== windows:%@",NSStringFromClass([[UIApplication sharedApplication].delegate.window class]),[self superclass],[self.parentViewController class],[UIApplication sharedApplication].windows);;
-    for (UIWindow *win in [UIApplication sharedApplication].windows) {
-        NSLog(@"%@",NSStringFromClass([win.rootViewController class]));
+    if ([[UIApplication sharedApplication]statusBarOrientation] == UIInterfaceOrientationPortrait) {
+        self.top.constant = 145;
+        self.bottom.constant = 210;
+    } else if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight) {
+        self.top.constant = 40;
+        self.bottom.constant = 50;
     }
 }
 
