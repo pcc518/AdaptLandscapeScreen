@@ -51,6 +51,7 @@
         //取出当前显示的控制器
         UIViewController *presentedViewController = [self topViewControllerWithRootViewController:self.window.rootViewController];
         //按当前控制器支持的方向确定旋转方向(将旋转方向重新交给每个控制器自己控制)
+        NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
         orientations = [presentedViewController supportedInterfaceOrientations];
     }
 

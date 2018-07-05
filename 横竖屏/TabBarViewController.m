@@ -25,7 +25,7 @@
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
     NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
     //允许旋转的方向
-    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeRight;
+    return UIInterfaceOrientationMaskAll;
 }
 
 

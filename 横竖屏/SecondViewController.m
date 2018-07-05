@@ -39,6 +39,8 @@
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
+    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+    //支持上 右
     return UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortrait;
 }
 

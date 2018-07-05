@@ -12,6 +12,8 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *top;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottom;
 @property (assign, nonatomic) UIInterfaceOrientation interOrientation;
+@property (assign, nonatomic) BOOL lockScreen;
+@property (assign, nonatomic) UIInterfaceOrientation newOrientation;
 @end
 
 @implementation FirstViewController
@@ -26,12 +28,13 @@
     UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"横屏" style:UIBarButtonItemStylePlain target:self action:@selector(rightAction)];
     self.navigationItem.rightBarButtonItem = rightItem;
     
-    //监听设备旋转
+    //监听设备旋转 改变 视图 对应位置
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange) name:UIDeviceOrientationDidChangeNotification object:nil];
-    
-  
+    _lockScreen = NO;
+
 }
 
+//用来控制横竖屏时调整视图位置
 - (void)deviceOrientationDidChange
 {
  
@@ -40,25 +43,37 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [self isPortrait];
+    if (_lockScreen) {
+        [self interfaceOrientation:_interOrientation];
+    } else {
+      [self isPortrait];
+    }
+    
   
 }
 
 - (void)isPortrait {
     
-    if ([[UIApplication sharedApplication]statusBarOrientation] == UIInterfaceOrientationPortrait) {
-        self.top.constant = 145;
-        self.bottom.constant = 210;
-    } else if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight) {
-        self.top.constant = 40;
-        self.bottom.constant = 50;
+    
+    if (!_lockScreen) {
+        _interOrientation = [[UIApplication sharedApplication]statusBarOrientation];
+        if (_interOrientation == UIInterfaceOrientationPortrait || _interOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+            self.top.constant = 145;
+            self.bottom.constant = 210;
+        } else if (_interOrientation == UIInterfaceOrientationLandscapeRight || _interOrientation == UIInterfaceOrientationLandscapeLeft) {
+            self.top.constant = 40;
+            self.bottom.constant = 50;
+        }
     }
+   
 }
 - (IBAction)pushAction:(id)sender {
+    _interOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     ModelViewController *modelVC = [ModelViewController getStoryBoard];
     [self.navigationController pushViewController:modelVC animated:YES];
 }
 - (IBAction)presentAction:(id)sender {
+    _interOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     ModelViewController *modelVC = [ModelViewController getStoryBoard];
     [self presentViewController:modelVC animated:YES completion:nil];
     
@@ -66,10 +81,14 @@
 - (IBAction)portraitAction:(id)sender {
  
     [self interfaceOrientation:UIInterfaceOrientationPortrait];
+    _interOrientation = UIInterfaceOrientationPortrait;
+    
 }
 - (IBAction)rightAction:(id)sender {
   
     [self interfaceOrientation:UIInterfaceOrientationLandscapeRight];
+    _interOrientation = UIInterfaceOrientationLandscapeRight;
+    
 }
 - (IBAction)shareAction:(id)sender {
     
@@ -83,28 +102,50 @@
     
     activityViewController.excludedActivityTypes = excludedActivityTypes;
     
-    UIPopoverPresentationController *popover = activityViewController.popoverPresentationController;
-    
-    if (popover) {
-        popover.sourceView = self.view;
-        popover.sourceRect = CGRectMake((width / 2), (height), 0, 0);
-        popover.permittedArrowDirections = 0;
-    }
-    //    activityViewController.view.transform = CGAffineTransformMakeRotation(M_PI_2);
     
     [self presentViewController:activityViewController animated:YES completion:nil];
     
     activityViewController.completionWithItemsHandler = ^(UIActivityType __nullable activityType, BOOL completed, NSArray * __nullable returnedItems, NSError * __nullable activityError){
         NSLog(@"%@  ----   %@", activityType, activityError);
-        
-        
     };
 
 }
+- (IBAction)lockAction:(UIButton *)sender {
+    if (_lockScreen) {
+        _lockScreen = NO;
+        [sender setTitle:@"锁定屏幕" forState:UIControlStateNormal];
+    } else {
+        _lockScreen = YES;
+        [sender setTitle:@"解开屏幕" forState:UIControlStateNormal];
+    }
+}
 
-
+//此方法来控制能否横竖屏
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskAllButUpsideDown;
+    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+    UIInterfaceOrientationMask inter;
+    if (_lockScreen) {
+        switch (_interOrientation) {
+            case 1:
+                inter = UIInterfaceOrientationMaskPortrait;
+                break;
+            case 2:
+                inter = UIInterfaceOrientationMaskPortraitUpsideDown;
+                break;
+            case 3:
+                inter = UIInterfaceOrientationMaskLandscapeLeft;
+                break;
+            case 4:
+                inter = UIInterfaceOrientationMaskLandscapeRight;
+                break;
+            default:inter = UIInterfaceOrientationMaskAll;
+                break;
+        }
+    } else {
+        inter = UIInterfaceOrientationMaskAll;
+    }
+    //支持全部方向
+    return inter;
 }
 
 - (void)leftAction
@@ -123,16 +164,38 @@
 {
    
     [self isPortrait];
-    if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
-        SEL selector             = NSSelectorFromString(@"setOrientation:");
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
-        [invocation setSelector:selector];
-        [invocation setTarget:[UIDevice currentDevice]];
-        int val                  = orientation;
-        // 从2开始是因为0 1 两个参数已经被selector和target占用
-        [invocation setArgument:&val atIndex:2];
-        [invocation invoke];
+
+    //锁屏之后跳转的之后仍会旋转???
+    if (_lockScreen) {
+        //防止在点击两次之后会转屏
+        if (_newOrientation != orientation) {
+            if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+                SEL selector             = NSSelectorFromString(@"setOrientation:");
+                NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
+                [invocation setSelector:selector];
+                [invocation setTarget:[UIDevice currentDevice]];
+                int val                  = orientation;
+                // 从2开始是因为0 1 两个参数已经被selector和target占用
+                [invocation setArgument:&val atIndex:2];
+                [invocation invoke];
+            }
+        }
+    } else {
+        
+        if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+            SEL selector             = NSSelectorFromString(@"setOrientation:");
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
+            [invocation setSelector:selector];
+            [invocation setTarget:[UIDevice currentDevice]];
+            int val                  = orientation;
+            // 从2开始是因为0 1 两个参数已经被selector和target占用
+            [invocation setArgument:&val atIndex:2];
+            [invocation invoke];
+        }
     }
+    
+    
+    _newOrientation = orientation;
 }
 
 
