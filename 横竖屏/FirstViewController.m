@@ -60,10 +60,13 @@
         if (_interOrientation == UIInterfaceOrientationPortrait || _interOrientation == UIInterfaceOrientationPortraitUpsideDown) {
             self.top.constant = 145;
             self.bottom.constant = 210;
+            
         } else if (_interOrientation == UIInterfaceOrientationLandscapeRight || _interOrientation == UIInterfaceOrientationLandscapeLeft) {
             self.top.constant = 40;
             self.bottom.constant = 50;
         }
+        [[UIApplication sharedApplication] setStatusBarOrientation:_interOrientation];
+        
     }
    
 }
@@ -172,6 +175,7 @@
 
     //锁屏情况下 不旋转 防止present 后方向变化
     if (!_lockScreen) {
+        NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
         [self setInterOrientation:orientation];
     }
     
@@ -191,6 +195,27 @@
         [invocation setArgument:&val atIndex:2];
         [invocation invoke];
     }
+}
+
+
+
+
+//设置样式(在iPhone X 上无效)
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+    return UIStatusBarStyleDefault;
+}
+
+//设置是否隐藏
+- (BOOL)prefersStatusBarHidden {
+    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+    return NO;
+}
+
+//设置隐藏动画
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+    return UIStatusBarAnimationFade;
 }
 
 @end
