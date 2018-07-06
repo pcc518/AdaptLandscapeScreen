@@ -21,6 +21,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor orangeColor];
 
+    
+    NSLog(@"interOrientation:%ld",[[UIApplication sharedApplication] statusBarOrientation]);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
