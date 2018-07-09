@@ -1,4 +1,6 @@
+# AdaptLandscapeScreen
 
+## 效果
 
-##效果
-![Example](iOS-旋转.gif)
+![Example](iOS-旋转.gif "Example View")
+
