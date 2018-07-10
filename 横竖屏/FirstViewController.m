@@ -34,26 +34,33 @@
     
 }
 
+
 //用来控制横竖屏时调整视图位置
 - (void)deviceOrientationDidChange
 {
  
     [self isPortrait];
+    NSLog(@"UIDeviceOrientation:%ld",[[UIDevice currentDevice]orientation]);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     if (_lockScreen) {
+        //记录返回时的界面状态
         [self setInterOrientation:_lockOrientation];
     } else {
       [self isPortrait];
     }
-    
   
 }
 
+//切换控制器会导致监听失败
+//- (void)viewWillDisappear:(BOOL)animated {
+//    [super viewWillDisappear:animated];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+//}
+
 - (void)isPortrait {
-    
     
     if (!_lockScreen) {
         _interOrientation = [[UIApplication sharedApplication]statusBarOrientation];
@@ -65,7 +72,8 @@
             self.top.constant = 40;
             self.bottom.constant = 50;
         }
-        [[UIApplication sharedApplication] setStatusBarOrientation:_interOrientation];
+        //状态栏方向的设置
+//        [[UIApplication sharedApplication] setStatusBarOrientation:_interOrientation];
         
     }
    
@@ -115,6 +123,7 @@
 }
 - (IBAction)lockAction:(UIButton *)sender {
     if (_lockScreen) {
+        
         _lockScreen = NO;
         [sender setTitle:@"锁定屏幕" forState:UIControlStateNormal];
     } else {
@@ -173,13 +182,12 @@
    
     [self isPortrait];
 
-    //锁屏情况下 不旋转 防止present 后方向变化
+    //锁屏情况下 不旋转
     if (!_lockScreen) {
         NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
         [self setInterOrientation:orientation];
     }
     
-   
 
 }
 
@@ -200,12 +208,6 @@
 
 
 
-//设置样式(在iPhone X 上无效)
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    return UIStatusBarStyleDefault;
-}
-
 //设置是否隐藏
 - (BOOL)prefersStatusBarHidden {
     NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
@@ -213,9 +215,10 @@
 }
 
 //设置隐藏动画
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    return UIStatusBarAnimationFade;
-}
+//- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+//    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
+//    return UIStatusBarAnimationFade;
+//}
+
 
 @end

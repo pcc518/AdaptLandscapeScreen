@@ -29,10 +29,6 @@
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
-    return YES;
-}
 
 
 -(UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
