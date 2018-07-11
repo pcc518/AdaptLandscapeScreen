@@ -181,14 +181,12 @@
 {
    
     [self isPortrait];
-
     //锁屏情况下 不旋转
     if (!_lockScreen) {
         NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
         [self setInterOrientation:orientation];
     }
     
-
 }
 
 - (void)setInterOrientation:(UIInterfaceOrientation)orientation {
