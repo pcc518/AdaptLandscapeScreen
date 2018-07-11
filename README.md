@@ -1,14 +1,17 @@
 # AdaptLandscapeScreen
 
-    在做视频开发时遇到屏幕旋转问题,其中涉及到 `StatusBar、 UINavigationController、UITabBarController 、UIViewcontroller`。
+在做视频开发时遇到屏幕旋转问题,其中涉及到 `StatusBar、 UINavigationController、UITabBarController 、UIViewcontroller`。
+
 ### 在设备锁屏下的整体效果图
 ![Example](iOS-旋转.gif "Example View")
+
 主要涉及以下4点：
 - **横竖屏的旋转**
 - **屏幕旋转相应改变视图位置**
 - **旋转时状态栏的隐藏与显示**
 - **锁屏**
-####1、横竖屏旋转
+
+#### 1、横竖屏旋转
 -  第1步：
 
 ```
@@ -128,8 +131,8 @@ int val                  = orientation;
 }
 }
 ```
-这样就可以完成横竖屏的切换。
-####2、屏幕旋转相应改变视图位置
+
+### 2、屏幕旋转相应改变视图位置
 
 - 第1步：监听 `UIDeviceOrientationDidChangeNotification`状态
 
@@ -155,7 +158,7 @@ self.bottom.constant = 50;
 }
 ```
 
-####3、旋转时状态栏的隐藏与显示
+### 3、旋转时状态栏的隐藏与显示
 - 这里只记述旋转时状态栏的变化，由竖屏想横屏变化时状态栏会消失。
 
 ```
@@ -165,7 +168,8 @@ NSLog(@"%s, line = %d",__FUNCTION__,__LINE__);
 return NO;
 }
 ```
-####4、锁屏
+### 4、锁屏
+
 锁屏时，不管系统锁屏是否关闭、Push 或 Present 返回后，界面依然保持不变。
 - 第1步：设置锁屏
 
@@ -208,7 +212,7 @@ if (_lockScreen) {
 }
 }
 ```
-####5、 针对特定`UIViewController`方向的支持
+### 5、 针对特定`UIViewController`方向的支持
 
 ```
 -(UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
@@ -221,7 +225,6 @@ return UIInterfaceOrientationMaskLandscapeRight;
 return UIInterfaceOrientationMaskPortrait;
 }
 ```
-####还有2个小的 ***bug*** ，欢迎有兴趣的朋友一起探讨。
-
-- 详情细节请查看[iOS屏幕旋转与锁屏](https://www.jianshu.com/p/5f82baaab740）
-
+### 还有留有2个小的 ***bug*** ，欢迎有兴趣的朋友一起探讨。
+### 详情记述
+- [iOS屏幕旋转与锁屏](https://www.jianshu.com/p/5f82baaab740)
